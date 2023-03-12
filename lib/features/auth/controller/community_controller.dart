@@ -2,10 +2,16 @@ import 'package:code_assist/core/constants/constants.dart';
 import 'package:code_assist/core/utils.dart';
 import 'package:code_assist/features/auth/controller/auth_controller.dart';
 import 'package:code_assist/features/auth/home/screens/drawers/community/repository/community_repository.dart';
+import 'package:code_assist/features/auth/home/screens/drawers/community/screens/create_community_screen.dart';
 import 'package:code_assist/models/community_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
+
+final userCommunitiesProvider = StreamProvider((ref) {
+  final communityController = ref.watch(communityControllerProvider.notifier);
+  return communityController.getUserCommunities();
+});
 
 class CommunityController extends StateNotifier<bool> {
   final CommunityRepository _communityRepository;
@@ -25,8 +31,8 @@ class CommunityController extends StateNotifier<bool> {
       name: name,
       banner: Constants.bannerDefault,
       avatar: Constants.avatarDefault,
-      members: [],
-      mods: [],
+      members: [uid],
+      mods: [uid],
     );
 
     final res = await _communityRepository.createCommunity(community);
@@ -35,5 +41,10 @@ class CommunityController extends StateNotifier<bool> {
       showSnackBar(context, 'codeRoom created successfully!');
       Routemaster.of(context).pop();
     });
+  }
+
+  Stream<List<Community>> getUserCommunities() {
+    final uid = _ref.read(userProvider)!.uid;
+    return _communityRepository.getUserCommunities(uid);
   }
 }
