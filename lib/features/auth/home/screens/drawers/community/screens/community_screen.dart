@@ -66,7 +66,9 @@ class CommunityScreen extends ConsumerWidget {
                               ),
                               community.mods.contains(user.uid)
                                   ? OutlinedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        navigateToModTools(context);
+                                      },
                                       style: ElevatedButton.styleFrom(
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
