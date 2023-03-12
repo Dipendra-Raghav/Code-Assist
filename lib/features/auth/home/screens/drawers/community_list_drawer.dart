@@ -1,6 +1,7 @@
 import 'package:code_assist/core/common/error_text.dart';
 import 'package:code_assist/core/common/loader.dart';
 import 'package:code_assist/features/auth/controller/community_controller.dart';
+import 'package:code_assist/models/community_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
@@ -10,6 +11,10 @@ class CommunityListDrawer extends ConsumerWidget {
 
   void navigateToCreateCommunity(BuildContext context) {
     Routemaster.of(context).push('/create-community');
+  }
+
+  void navigateToCommunity(BuildContext context, Community community) {
+    Routemaster.of(context).push('/r/${community.name}');
   }
 
   @override
@@ -34,7 +39,9 @@ class CommunityListDrawer extends ConsumerWidget {
                             backgroundImage: NetworkImage(community.avatar),
                           ),
                           title: Text('${community.name}'),
-                          onTap: () {},
+                          onTap: () {
+                            navigateToCommunity(context, community);
+                          },
                         );
                       },
                     ),
