@@ -1,4 +1,5 @@
 import 'package:code_assist/features/auth/home/screens/drawers/community/screens/create_community_screen.dart';
+import 'package:code_assist/features/auth/home/screens/drawers/community/screens/edit_community_screen.dart';
 import 'package:code_assist/features/auth/home/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
@@ -21,6 +22,11 @@ final loggedInRoute = RouteMap(routes: {
       ),
   '/mod-tools/:name': (routeData) => MaterialPage(
         child: ModToolsScreen(
+          name: routeData.pathParameters['name']!,
+        ),
+      ),
+  '/edit-community/:name': (routeData) => MaterialPage(
+        child: EditCommunityScreen(
           name: routeData.pathParameters['name']!,
         ),
       ),
