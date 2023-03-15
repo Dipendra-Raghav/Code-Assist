@@ -4,6 +4,7 @@ import 'package:code_assist/core/constants/constants.dart';
 import 'package:code_assist/core/providers/storage_repository_provider.dart';
 import 'package:code_assist/core/utils.dart';
 import 'package:code_assist/features/auth/controller/auth_controller.dart';
+import 'package:code_assist/features/auth/home/delegates/search_community_delegate.dart';
 import 'package:code_assist/features/auth/home/screens/drawers/community/repository/community_repository.dart';
 import 'package:code_assist/features/auth/home/screens/drawers/community/screens/create_community_screen.dart';
 import 'package:code_assist/models/community_model.dart';
@@ -31,6 +32,10 @@ final getCommunityByNameProvider = StreamProvider.family((ref, String name) {
   return ref
       .watch(communityControllerProvider.notifier)
       .getCommunityByName(name);
+});
+
+final searchCommunityProvider = StreamProvider.family((ref, String query) {
+  return ref.watch(communityControllerProvider.notifier).searchCommunity(query);
 });
 
 class CommunityController extends StateNotifier<bool> {
@@ -112,5 +117,9 @@ class CommunityController extends StateNotifier<bool> {
       (l) => showSnackBar(context, l.message),
       (r) => Routemaster.of(context).pop(),
     );
+  }
+
+  Stream<List<Community>> searchCommunity(String query) {
+    return _communityRepository.searchCommunity(query);
   }
 }
