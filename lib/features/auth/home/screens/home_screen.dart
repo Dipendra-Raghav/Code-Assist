@@ -1,6 +1,7 @@
 import 'package:code_assist/features/auth/controller/auth_controller.dart';
 import 'package:code_assist/features/auth/home/delegates/search_community_delegate.dart';
 import 'package:code_assist/features/auth/home/screens/drawers/community_list_drawer.dart';
+import 'package:code_assist/features/auth/home/screens/drawers/profile_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,6 +10,10 @@ class HomeScreen extends ConsumerWidget {
 
   void displayDrawer(BuildContext context) {
     Scaffold.of(context).openDrawer();
+  }
+
+  void displayEndDrawer(BuildContext context) {
+    Scaffold.of(context).openEndDrawer();
   }
 
   @override
@@ -33,15 +38,18 @@ class HomeScreen extends ConsumerWidget {
             },
             icon: const Icon(Icons.search),
           ),
-          IconButton(
-            icon: CircleAvatar(
-              backgroundImage: NetworkImage(user.profilePic),
-            ),
-            onPressed: () {},
-          ),
+          Builder(builder: (context) {
+            return IconButton(
+              icon: CircleAvatar(
+                backgroundImage: NetworkImage(user.profilePic),
+              ),
+              onPressed: () => displayEndDrawer(context),
+            );
+          }),
         ],
       ),
       drawer: const CommunityListDrawer(),
+      endDrawer: const ProfileDrawer(),
     );
   }
 }
