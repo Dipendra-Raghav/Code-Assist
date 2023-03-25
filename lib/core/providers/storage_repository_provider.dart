@@ -1,12 +1,12 @@
 import 'dart:io';
-
-import 'package:code_assist/core/failure.dart';
-import 'package:code_assist/core/providers/firebase_providers.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 
+import '../failure.dart';
 import '../type_defs.dart';
+import 'firebase_providers.dart';
 
 final storageRepositoryProvider = Provider(
   (ref) => StorageRepository(
@@ -16,6 +16,7 @@ final storageRepositoryProvider = Provider(
 
 class StorageRepository {
   final FirebaseStorage _firebaseStorage;
+
   StorageRepository({required FirebaseStorage firebaseStorage})
       : _firebaseStorage = firebaseStorage;
 
@@ -23,12 +24,20 @@ class StorageRepository {
     required String path,
     required String id,
     required File? file,
+    required Uint8List? webFile,
   }) async {
     try {
       final ref = _firebaseStorage.ref().child(path).child(id);
-      UploadTask uploadTask = ref.putFile(file!);
+      UploadTask uploadTask;
+
+      if (kIsWeb) {
+        uploadTask = ref.putData(webFile!);
+      } else {
+        uploadTask = ref.putFile(file!);
+      }
 
       final snapshot = await uploadTask;
+
       return right(await snapshot.ref.getDownloadURL());
     } catch (e) {
       return left(Failure(e.toString()));

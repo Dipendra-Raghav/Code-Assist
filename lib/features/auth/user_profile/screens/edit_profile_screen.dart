@@ -10,6 +10,7 @@ import '../../../../core/common/error_text.dart';
 import '../../../../core/common/loader.dart';
 import '../../../../core/constants/constants.dart';
 import '../../../../core/utils.dart';
+import '../../../../responsive/responsive.dart';
 import '../../../../theme/pallete.dart';
 import '../../controller/auth_controller.dart';
 

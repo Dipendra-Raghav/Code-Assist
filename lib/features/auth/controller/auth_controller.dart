@@ -1,13 +1,12 @@
-import 'package:code_assist/core/providers/firebase_providers.dart';
-import 'package:code_assist/core/utils.dart';
-import 'package:code_assist/features/auth/repository/auth_repository.dart';
-import 'package:code_assist/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fpdart/fpdart.dart';
 
-final userProvider = StateProvider<UserModel?>(((ref) => null));
+import '../../../core/utils.dart';
+import '../../../models/user_model.dart';
+import '../repository/auth_repository.dart';
+
+final userProvider = StateProvider<UserModel?>((ref) => null);
 
 final authControllerProvider = StateNotifierProvider<AuthController, bool>(
   (ref) => AuthController(
@@ -32,18 +31,29 @@ class AuthController extends StateNotifier<bool> {
   AuthController({required AuthRepository authRepository, required Ref ref})
       : _authRepository = authRepository,
         _ref = ref,
-        super(false);
+        super(false); // loading
 
   Stream<User?> get authStateChange => _authRepository.authStateChange;
 
-  void signInWithGoogle(BuildContext context) async {
+  void signInWithGoogle(BuildContext context, bool isFromLogin) async {
     state = true;
-    final user = await _authRepository.signInWithGoogle();
+    final user = await _authRepository.signInWithGoogle(isFromLogin);
     state = false;
     user.fold(
       (l) => showSnackBar(context, l.message),
-      (UserModel) =>
-          _ref.read(userProvider.notifier).update((state) => UserModel),
+      (userModel) =>
+          _ref.read(userProvider.notifier).update((state) => userModel),
+    );
+  }
+
+  void signInAsGuest(BuildContext context) async {
+    state = true;
+    final user = await _authRepository.signInAsGuest();
+    state = false;
+    user.fold(
+      (l) => showSnackBar(context, l.message),
+      (userModel) =>
+          _ref.read(userProvider.notifier).update((state) => userModel),
     );
   }
 

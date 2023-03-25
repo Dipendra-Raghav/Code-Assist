@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:code_assist/core/constants/constants.dart';
-import 'package:code_assist/core/constants/firebase_constants.dart';
-import 'package:code_assist/core/failure.dart';
-import 'package:code_assist/core/providers/firebase_providers.dart';
-import 'package:code_assist/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../../core/constants/constants.dart';
+import '../../../core/constants/firebase_constants.dart';
+import '../../../core/failure.dart';
+import '../../../core/providers/firebase_providers.dart';
 import '../../../core/type_defs.dart';
+import '../../../models/user_model.dart';
 
 final authRepositoryProvider = Provider(
   (ref) => AuthRepository(
@@ -37,18 +38,32 @@ class AuthRepository {
 
   Stream<User?> get authStateChange => _auth.authStateChanges();
 
-  FutureEither<UserModel> signInWithGoogle() async {
+  FutureEither<UserModel> signInWithGoogle(bool isFromLogin) async {
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      final googleAuth = (await googleUser?.authentication);
+      UserCredential userCredential;
+      if (kIsWeb) {
+        GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        googleProvider
+            .addScope('https://www.googleapis.com/auth/contacts.readonly');
+        userCredential = await _auth.signInWithPopup(googleProvider);
+      } else {
+        final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
+        final googleAuth = await googleUser?.authentication;
 
-      UserCredential userCredential =
-          await _auth.signInWithCredential((credential));
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth?.accessToken,
+          idToken: googleAuth?.idToken,
+        );
+
+        if (isFromLogin) {
+          userCredential = await _auth.signInWithCredential(credential);
+        } else {
+          userCredential =
+              await _auth.currentUser!.linkWithCredential(credential);
+        }
+      }
+
       UserModel userModel;
 
       if (userCredential.additionalUserInfo!.isNewUser) {
@@ -59,12 +74,45 @@ class AuthRepository {
           uid: userCredential.user!.uid,
           isAuthenticated: true,
           assistPoint: 0,
-          awards: [],
+          awards: [
+            'awesomeAns',
+            'gold',
+            'platinum',
+            'helpful',
+            'plusone',
+            'rocket',
+            'thankyou',
+            'til',
+          ],
         );
         await _users.doc(userCredential.user!.uid).set(userModel.toMap());
       } else {
         userModel = await getUserData(userCredential.user!.uid).first;
       }
+      return right(userModel);
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureEither<UserModel> signInAsGuest() async {
+    try {
+      var userCredential = await _auth.signInAnonymously();
+
+      UserModel userModel = UserModel(
+        name: 'Guest',
+        profilePic: Constants.avatarDefault,
+        banner: Constants.bannerDefault,
+        uid: userCredential.user!.uid,
+        isAuthenticated: false,
+        assistPoint: 0,
+        awards: [],
+      );
+
+      await _users.doc(userCredential.user!.uid).set(userModel.toMap());
+
       return right(userModel);
     } on FirebaseException catch (e) {
       throw e.message!;

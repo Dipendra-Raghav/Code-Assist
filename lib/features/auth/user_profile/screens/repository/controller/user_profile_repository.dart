@@ -6,7 +6,9 @@ import '../../../../../../core/constants/firebase_constants.dart';
 import '../../../../../../core/failure.dart';
 import '../../../../../../core/providers/firebase_providers.dart';
 import '../../../../../../core/type_defs.dart';
+import '../../../../../../models/post_model.dart';
 import '../../../../../../models/user_model.dart';
+import 'package:code_assist/core/enums/enums.dart';
 
 final userProfileRepositoryProvider = Provider((ref) {
   return UserProfileRepository(firestore: ref.watch(firestoreProvider));
@@ -48,10 +50,10 @@ class UserProfileRepository {
         );
   }
 
-  FutureVoid updateUserKarma(UserModel user) async {
+  FutureVoid updateassistPoint(UserModel user) async {
     try {
       return right(_users.doc(user.uid).update({
-        'karma': user.assistPoint,
+        'assistPoint': user.assistPoint,
       }));
     } on FirebaseException catch (e) {
       throw e.message!;

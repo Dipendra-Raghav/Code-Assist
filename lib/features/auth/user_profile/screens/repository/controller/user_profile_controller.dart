@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:code_assist/features/auth/user_profile/screens/repository/controller/user_profile_repository.dart';
+import 'package:code_assist/models/post_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:routemaster/routemaster.dart';
 
+import '../../../../../../core/enums/enums.dart';
 import '../../../../../../core/providers/storage_repository_provider.dart';
 import '../../../../../../core/utils.dart';
 import '../../../../../../models/user_model.dart';
@@ -93,12 +95,12 @@ class UserProfileController extends StateNotifier<bool> {
     return _userProfileRepository.getUserPosts(uid);
   }
 
-  void updateUserassistPoint(assistPoint assistPoint) async {
+  void updateUserassistPoint(UserPoint assistPoint) async {
     UserModel user = _ref.read(userProvider)!;
     user =
         user.copyWith(assistPoint: user.assistPoint + assistPoint.assistPoint);
 
-    final res = await _userProfileRepository.updateUserKarma(user);
+    final res = await _userProfileRepository.updateassistPoint(user);
     res.fold((l) => null,
         (r) => _ref.read(userProvider.notifier).update((state) => user));
   }

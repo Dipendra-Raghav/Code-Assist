@@ -1,9 +1,11 @@
+import 'package:code_assist/features/auth/user_profile/screens/repository/controller/user_profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../../../../core/common/error_text.dart';
 import '../../../../core/common/loader.dart';
+import '../../../../core/common/post_card.dart';
 import '../../controller/auth_controller.dart';
 
 class UserProfileScreen extends ConsumerWidget {

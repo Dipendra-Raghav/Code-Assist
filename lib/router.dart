@@ -9,6 +9,9 @@ import 'features/auth/home/screens/drawers/community/screens/community_screen.da
 import 'features/auth/home/screens/drawers/community/screens/mod_tools_screen.dart';
 import 'features/auth/screens/login_screen.dart';
 import 'features/auth/user_profile/screens/user_profile_screen.dart';
+import 'features/posts/screens/add_post_screen.dart';
+import 'features/posts/screens/add_post_type_screen.dart';
+import 'features/posts/screens/comments_screen.dart';
 
 final loggedOutRoute = RouteMap(routes: {
   '/': (_) => const MaterialPage(child: LoginScreen()),
@@ -47,5 +50,18 @@ final loggedInRoute = RouteMap(routes: {
         child: EditProfileScreen(
           uid: routeData.pathParameters['uid']!,
         ),
+      ),
+  '/add-post/:type': (routeData) => MaterialPage(
+        child: AddPostTypeScreen(
+          type: routeData.pathParameters['type']!,
+        ),
+      ),
+  '/post/:postId/comments': (route) => MaterialPage(
+        child: CommentsScreen(
+          postId: route.pathParameters['postId']!,
+        ),
+      ),
+  '/add-post': (routeData) => const MaterialPage(
+        child: AddPostScreen(),
       ),
 });
