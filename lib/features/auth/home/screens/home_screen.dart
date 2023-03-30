@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
 
 import '../../../../core/constants/constants.dart';
+import '../../../../home_page.dart';
 import '../../../../theme/pallete.dart';
 import '../../controller/auth_controller.dart';
 import '../delegates/search_community_delegate.dart';
@@ -97,6 +98,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               onTap: onPageChanged,
               currentIndex: _page,
             ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomeChatPage()),
+          );
+        },
+        child: CircleAvatar(
+          backgroundColor: Colors.white,
+          child: Image.asset('assets/images/chatbot.png'),
+        ),
+      ),
     );
   }
 }
