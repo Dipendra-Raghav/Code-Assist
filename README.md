@@ -2,7 +2,6 @@
 ## Description
 Code Assist is a collaborative coding platform that connects developers and coders from around the world. It provides a seamless environment for users to create and join "Code Rooms" where they can post queries and seek assistance from fellow developers. The platform also includes AI-powered bots, based on OpenAI's GPT and DALL·E models, to provide answers to queries when no one is available online. Code Assist aims to foster knowledge sharing, collaboration, and problem-solving within the coding community.
 
-### - [Website Link](https://code-assist-4d344.web.app/)
 ### - [Apk Download](https://drive.google.com/file/d/1XZqSIYlSpnQlQFo2EDlfzaVOluTWfw-Z/view?usp=share_link/)
 
 
